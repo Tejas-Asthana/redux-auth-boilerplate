@@ -40,7 +40,7 @@ Router.route("/").post((req, response) => {
           }
         );
       });
-    } else {
+    } else if (i === allUsers.length - 1){
       return response.status(400).json({ msg: "invalid credentials" });
     }
   }
