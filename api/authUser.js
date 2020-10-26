@@ -12,13 +12,16 @@ Router.route("/").post((req, response) => {
     return response.status(400).json({ msg: "Enter all fields" });
   }
 
-  let currentUser = {
+  const currentUser = {
     email: req.body.email,
     password: req.body.password,
   };
 
+  console.log(allUsers.length);
+  let match = false;
   for (let i = 0; i < allUsers.length; i++) {
     if (allUsers[i].email === currentUser.email) {
+      match = true;
       bcrypt.compare(currentUser.password, allUsers[i].password).then((res) => {
         if (!res) {
           return response.status(400).json({ msg: "invalid credentials" });
@@ -40,11 +43,10 @@ Router.route("/").post((req, response) => {
           }
         );
       });
-    } else if (i === allUsers.length - 1){
+    } else if (i === allUsers.length - 1 && !match) {
       return response.status(400).json({ msg: "invalid credentials" });
     }
   }
-
   // console.log(allUsers);
 });
 
