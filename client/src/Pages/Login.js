@@ -1,20 +1,23 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-import store from "../store/store";
+import { withRouter } from "react-router-dom";
 
 import { LOGIN_FAIL } from "../actions/types";
 import { loadUser, loginUser } from "../actions/authActions";
 import { clearErrors } from "../actions/errorActions";
 
 import Forms from "../components/form";
+import { store } from "../store/store";
 
 function Login(props) {
   let [loginData, setLoginData] = useState({ email: "", password: "" });
   let [errorMsg, setErrorMsg] = useState("");
+  // let history = useHistory();
 
-  // useEffect(() => {
-  //   props.loadUser();
-  // }, []);
+  useEffect(() => {
+    props.loadUser();
+  }, []);
 
   useEffect(() => {
     if (props.error.id === LOGIN_FAIL) {
@@ -33,16 +36,18 @@ function Login(props) {
   function handleSubmit(e) {
     e.preventDefault();
     // attempt to register a user
-    props.loginUser(loginData);
-    // clear all the errors after register
+    props.loginUser(loginData, props.history, "privatePage");
     props.clearErrors();
-    console.log(loginData);
   }
 
   return (
     <>
       <div className="jumbotron text-center text-dark h1">
         Welcome back! <br /> Login
+        <br />
+        <Link to="/signup">
+          <button className="btn">Signup</button>
+        </Link>
       </div>
       <div className="container">
         {errorMsg ? (
@@ -70,8 +75,10 @@ const mapStateToProps = (state) => ({
   error: state.error,
 });
 
-export default connect(mapStateToProps, {
-  loginUser,
-  loadUser,
-  clearErrors,
-})(Login);
+export default withRouter(
+  connect(mapStateToProps, {
+    loginUser,
+    loadUser,
+    clearErrors,
+  })(Login)
+);

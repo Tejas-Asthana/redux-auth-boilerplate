@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
+import store from "../store/store";
 
 import { REGISTER_FAIL } from "../actions/types";
 
@@ -42,7 +44,7 @@ function Signup(props) {
       e.preventDefault(); // will prevent from page to reload
 
       // attempt to register a user
-      props.registerUser(signupData);
+      props.registerUser(signupData, props.history, "login");
       // clear all the errors after register
       props.clearErrors();
       // console.log(props.error);
@@ -56,6 +58,9 @@ function Signup(props) {
       <div className="jumbotron text-center text-dark h1">
         Welcome, Signup !
         <br />
+        <Link to="/login">
+          <button className="btn">Login</button>
+        </Link>
       </div>
       <div className="container">
         {errorMsg ? (

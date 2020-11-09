@@ -31,15 +31,23 @@ export default function (state = initialState, action) {
         // user: action.payload,
       };
     case LOGIN_SUCCESS:
-    // in my app, I have created 2 different routes for login & signup,
-    // so might have to change this later
-    case REGISTER_SUCCESS:
-      // console.log("reducer fired");
+      // in my app, I have created 2 different routes for login & signup,
+      // so might have to change this later
       localStorage.setItem("token", action.payload.token);
       return {
         ...state,
         ...action.payload,
         isAuthenticated: true,
+        isLoading: false,
+      };
+    case REGISTER_SUCCESS:
+      // console.log("reducer fired");
+      // localStorage.setItem("token", action.payload.token);
+      return {
+        ...state,
+        // ...action.payload,
+        token: null,
+        isAuthenticated: false,
         isLoading: false,
       };
     case LOGOUT_SUCCESS:

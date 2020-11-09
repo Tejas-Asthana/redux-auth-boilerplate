@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 const config = require("config");
 const jwt = require("jsonwebtoken");
 
-let users = require("../users.js");
+let { users } = require("../users.js");
 
 const Router = express.Router();
 
@@ -21,6 +21,13 @@ Router.route("/").post((req, res) => {
     username: req.body.username,
     email: req.body.email,
     password: req.body.password,
+    phone: [],
+    social: {
+      fb: "",
+      insta: "",
+      twitter: "",
+    },
+    upi: "",
   };
   // console.log(newUser);
 
@@ -48,7 +55,7 @@ Router.route("/").post((req, res) => {
           { expiresIn: 3600 }, // expires in 1 hr
           (err, token) => {
             if (err) throw err;
-            res.json({
+            return res.json({
               token,
               user: {
                 id: newUser.id,

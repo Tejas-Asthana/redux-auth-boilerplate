@@ -50,7 +50,11 @@ export const loadUser = () => (dispatch, getState) => {
 };
 
 // register user
-export const registerUser = ({ username, email, password }) => (dispatch) => {
+export const registerUser = (
+  { username, email, password },
+  history = null,
+  url = null
+) => (dispatch) => {
   const config = {
     headers: {
       "Content-Type": "application/json",
@@ -68,6 +72,7 @@ export const registerUser = ({ username, email, password }) => (dispatch) => {
         type: REGISTER_SUCCESS,
         payload: res.data,
       });
+      history.push("/" + url);
       // console.log(res.data);
     })
     .catch((err) => {
@@ -80,7 +85,9 @@ export const registerUser = ({ username, email, password }) => (dispatch) => {
 };
 
 // login user
-export const loginUser = ({ email, password }) => (dispatch) => {
+export const loginUser = ({ email, password }, history = null, url = null) => (
+  dispatch
+) => {
   const config = {
     headers: {
       "Content-Type": "application/json",
@@ -92,16 +99,17 @@ export const loginUser = ({ email, password }) => (dispatch) => {
   // console.log(body);
 
   axios
-    .post("/api/authUser", body, config)
+    .post("http://localhost:5000/api/authUser", body, config)
     .then((res) => {
       dispatch({
         type: LOGIN_SUCCESS,
         payload: res.data,
       });
-      // console.log(res.data);
+      history.push("/" + url);
+      console.log(res.data);
     })
     .catch((err) => {
-      // console.log(body);
+      console.log(body);
       dispatch(
         returnErrors(err.response.data, err.response.status, LOGIN_FAIL)
       );

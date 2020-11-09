@@ -5,11 +5,7 @@ import { logout } from "../actions/authActions";
 
 function LogoutBtn(props) {
   return (
-    <button
-      onClick={props.logout}
-      type="button"
-      className="btn btn-outline-danger"
-    >
+    <button onClick={props.logout} type="button" className="btn btn-danger">
       Logout
     </button>
   );

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import store from "../store/store";
+import { store } from "../store/store";
 import { returnErrors } from "../actions/errorActions";
 import { HelloWorld } from "../actions/consoleActions";
 import { loadUser } from "../actions/authActions";
@@ -13,12 +13,12 @@ let PrivatePage = (props) => {
   useEffect(() => {
     props.loadUser();
     // store.dispatch(props.returnErrors(props.error.msg, props.error.status));
-    console.log(props.error.msg, props.error.status);
+    // console.log(props.error.msg, props.error.status);
     props.returnErrors(props.error.msg, props.error.status);
   }, []);
 
   let [displayData, setData] = useState({
-    data: store.getState().consoleData.data,
+    // data: store.getState().consoleData.data,
   });
 
   function onClickHandler() {
@@ -41,7 +41,7 @@ let PrivatePage = (props) => {
         This is a private page
         <br />
         <button className="btn btn-primary" onClick={() => onClickHandler()}>
-          Redux data
+          Click me once !
         </button>
       </div>
       <br />

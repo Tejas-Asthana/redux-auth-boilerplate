@@ -1,3 +1,8 @@
+.sidebar-bars-btn {
+  transform: rotate(90deg);
+}
+
+
 .App {
   text-align: center;
 }
