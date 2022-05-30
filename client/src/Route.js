@@ -18,7 +18,7 @@ function Routes() {
     <Provider store={store}>
       <Router>
         <PersistGate persistor={persistor}>
-          <Navbar />
+          {/* <Navbar /> */}
           <Route exact path="/" component={Home} />
           <Route exact path="/privatePage" component={PrivatePage} />
           <Route exact path="/login" component={Login} />

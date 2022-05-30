@@ -36,7 +36,7 @@ function Login(props) {
   function handleSubmit(e) {
     e.preventDefault();
     // attempt to register a user
-    props.loginUser(loginData, props.history, "privatePage");
+    props.loginUser(loginData, props.history, "");
     props.clearErrors();
   }
 
