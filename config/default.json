@@ -1,3 +1,4 @@
 {
-  "jwtSecret": "my_very_secret_key"
+  "jwtSecret": "my_very_secret_key",
+  "MONGO_URL": "mongodb+srv://test1:test1@cluster0.au30t9u.mongodb.net/chat-app?retryWrites=true&w=majority"
 }

@@ -35,10 +35,11 @@
 }
 
 .chat-msgs-window {
-  position: absolute;
-  top: 0;
-  min-height: 500px;
-  max-height: 700px;
+  /* position: absolute;
+  top: 0; */
+  height: calc(100vh - 200px);
+  max-height: fit-content;
+  overflow-y: scroll;
   border: 1px solid rgb(92, 92, 92);
   padding: 5px;
   border-radius: 10px;
@@ -47,6 +48,7 @@
 }
 
 .chat-input-wrapper {
+  z-index: 2;
   position: absolute;
   bottom: 0;
   margin: 10px 0;
@@ -57,4 +59,16 @@
   border-radius: 10px;
   width: 100%;
   max-width: 100%;
+}
+
+.msg-slf {
+  background: rgb(197, 197, 197);
+  padding: 5px;
+  color: black;
+}
+
+.msg-new {
+  background: rgb(77, 175, 255);
+  padding: 5px;
+  color: #fff;
 }
