@@ -3,7 +3,14 @@ const Message = require("../models/Message");
 
 //add
 router.post("/", async (req, res) => {
-  const newMessage = new Message(req.body);
+  console.log(req.body);
+  if (
+    !req.body.data.conversationId ||
+    !req.body.data.sender ||
+    !req.body.data.text
+  )
+    res.status(400).json({ err: "Enter all fields" });
+  const newMessage = new Message(req.body.data);
 
   try {
     const savedMessage = await newMessage.save();

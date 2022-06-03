@@ -4,20 +4,20 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 
 import { LOGIN_FAIL } from "../actions/types";
-import { loadUser, loginUser } from "../actions/authActions";
-import { clearErrors } from "../actions/errorActions";
+import { loadUser, loginUser } from "../actions/auth";
+import { clearErrors } from "../actions/error";
 
 import Forms from "../components/form";
-import { store } from "../store/store";
+// import { store } from "../store/store";
 
 function Login(props) {
   let [loginData, setLoginData] = useState({ email: "", password: "" });
   let [errorMsg, setErrorMsg] = useState("");
   // let history = useHistory();
 
-  useEffect(() => {
-    props.loadUser();
-  }, []);
+  // useEffect(() => {
+  //   props.loadUser();
+  // }, []);
 
   useEffect(() => {
     if (props.error.id === LOGIN_FAIL) {
@@ -56,7 +56,7 @@ function Login(props) {
           </div>
         ) : null}
         <Forms
-          action="/api/authUser"
+          action="/api/auth/register"
           method="POST"
           username={{ show: false, isRequired: false }}
           email={{ show: true, value: loginData.email, isRequired: true }}

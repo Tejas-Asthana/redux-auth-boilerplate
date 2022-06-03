@@ -7,12 +7,19 @@
 }
 
 .searchbar {
-  margin: 50px auto;
+  margin: 10px auto 0;
   padding: 10px;
   border-radius: 20px;
-  width: 500px;
+  width: 100%;
   max-width: 100%;
   outline: none;
+}
+
+.go-btn {
+  color: #fff;
+  /* position: relative; */
+  /* top: 50%; */
+  /* left: 50%; */
 }
 
 .wrapper {
@@ -47,7 +54,7 @@
   max-width: 100%;
 }
 
-.chat-input-wrapper {
+/* .chat-input-wrapper {
   z-index: 2;
   position: absolute;
   bottom: 0;
@@ -59,7 +66,7 @@
   border-radius: 10px;
   width: 100%;
   max-width: 100%;
-}
+} */
 
 .msg-slf {
   background: rgb(197, 197, 197);
@@ -72,3 +79,122 @@
   padding: 5px;
   color: #fff;
 }
+
+.srch-res {
+  margin: 5px 10px;
+  padding: 5px 10px;
+  position: relative;
+  top: 0;
+  /* max-width: 200px; */
+}
+
+.each-srch-rslt {
+  z-index: 2;
+  margin: 10px 20px;
+  padding: 5px;
+  background: rgb(255, 255, 255);
+  /* border-radius: 20px; */
+}
+
+/*  */
+
+.msg {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+  align-items: flex-start;
+}
+
+.messageText {
+  padding: 10px 15px;
+  border-radius: 20px;
+  background-color: #1877f2;
+  color: white;
+  max-width: 300px;
+}
+
+.messageBottom {
+  margin-top: 5px;
+  font-size: 12px;
+}
+
+.slf {
+  align-items: flex-end;
+}
+
+.slf .messageText {
+  background-color: rgb(245, 241, 241);
+  color: black;
+}
+
+.chat-wrapper {
+  height: 100vh;
+  max-height: 100vh;
+}
+
+.chat-input {
+  margin-bottom: 10px;
+  border-radius: 20px;
+  overflow: hidden;
+  height: 100%;
+}
+
+.show-messages {
+  overflow-y: scroll;
+  min-height: 70%;
+  border: 2px solid rgba(255, 255, 255, 0.466);
+  border-radius: 20px;
+  padding: 30px;
+  margin-bottom: 10px;
+}
+
+.editor-wrapper {
+  border-radius: 40px;
+  background: rgba(255, 255, 255, 0.13);
+  background: #fff;
+}
+
+.editor-toolbar {
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  background: #fff;
+}
+
+.editor-input {
+  padding: 0 15px;
+  height: 100%;
+  min-height: 90px;
+  max-height: 90px;
+  overflow-y: scroll;
+  color: #000;
+  /* background: rgba(255, 254, 192, 0.733); */
+  background: #fff;
+  /* background: #fff; */
+}
+
+/* .editor-bottom-row {
+  position: relative;
+  bottom: 0;
+} */
+
+.chatSubmitButton {
+  width: 70px;
+  height: 40px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #fff;
+  color: white;
+}
+
+#actual-upload-btn {
+  background-color: rgba(255, 254, 192, 0.333);
+  width: 35px;
+  margin-left: 10px;
+  padding: 5px;
+  border-radius: 20px;
+  cursor: pointer;
+  margin-top: 0px;
+  color: #fff;
+}
+/*  */

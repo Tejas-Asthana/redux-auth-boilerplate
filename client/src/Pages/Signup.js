@@ -6,8 +6,8 @@ import store from "../store/store";
 import { REGISTER_FAIL } from "../actions/types";
 
 import Forms from "../components/form";
-import { loadUser, registerUser } from "../actions/authActions";
-import { clearErrors } from "../actions/errorActions";
+import { loadUser, registerUser } from "../actions/auth";
+import { clearErrors } from "../actions/error";
 
 function Signup(props) {
   let [errorMsg, setErrorMsg] = useState("");

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { store } from "../store/store";
-import { returnErrors } from "../actions/errorActions";
+import { returnErrors } from "../actions/error";
 import { HelloWorld } from "../actions/consoleActions";
-import { loadUser } from "../actions/authActions";
+import { loadUser } from "../actions/auth";
 
 import { connect } from "react-redux";
 

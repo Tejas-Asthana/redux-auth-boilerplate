@@ -1,18 +1,20 @@
 import { combineReducers } from "redux";
-import ConsoleLogger from "./consoleLogger";
-import AuthReducer from "./authReducer";
-import ErrorReducer from "./errorReducer";
+import Friends from "./friends";
+import Conversations from "./conversations";
+import AuthReducer from "./auth";
+import ErrorReducer from "./error";
 import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["auth", "error", "consoleData"],
+  whitelist: ["auth", "error", "friends", "conversations"],
 };
 
 const rootReducer = combineReducers({
-  consoleData: ConsoleLogger,
+  friends: Friends,
+  conversations: Conversations,
   auth: AuthReducer,
   error: ErrorReducer,
 });

@@ -1,7 +1,6 @@
-import { propertiesParser } from "config/parser";
 import React from "react";
 import { connect } from "react-redux";
-import { logout } from "../actions/authActions";
+import { logout } from "../actions/auth";
 
 function LogoutBtn(props) {
   return (

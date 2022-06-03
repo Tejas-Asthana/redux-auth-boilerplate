@@ -32,9 +32,9 @@ app.use(helmet());
 app.use(morgan("common"));
 
 app.use("/api/auth", auth);
-app.use("/api/user", authMiddleware, user);
-app.use("api/messages", authMiddleware, messages);
-app.use("api/conversations", authMiddleware, conversations);
+app.use("/api/user", user);
+app.use("/api/messages", messages);
+app.use("/api/conversations", conversations);
 
 app.get("/privatePage", authMiddleware, (req, res) => {
   res.status(200).send("Hello world");
