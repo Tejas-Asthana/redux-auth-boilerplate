@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import axios from "axios";
 import { EditorState } from "draft-js";
 import { convertToHTML } from "draft-convert";
+import { socket } from "../components/socket.jsx";
 
 import Friends from "../components/friends.js";
 import Conversation from "../components/conversation.js";
@@ -13,7 +14,6 @@ import { getConversations } from "../actions/conversations";
 import { getFriends } from "../actions/user";
 import { logout } from "../actions/auth";
 
-import PvtPage from "../components/pvtPageBtn";
 import "../App.css";
 import Send from "../imgs/send.svg";
 import Upload from "../imgs/upload.svg";
@@ -26,11 +26,43 @@ let App = (props) => {
   const [contentHtml, setContentHtml] = useState("");
   const [newMessage, setNewMessage] = useState(EditorState.createEmpty());
   const [conversations, setConversations] = useState([]);
+  const [arrivalMessage, setArrivalMessage] = useState(null);
+  const [onlineUsers, setOnlineUsers] = useState([]);
+  // const socket = useRef();
   const scrollRef = useRef();
 
   useEffect(() => {
     setConversations(props.conversations);
+
+    socket.on("getMessage", (data) =>
+      setArrivalMessage({
+        sender: data.senderId,
+        text: data.text,
+        createdAt: Date.now(),
+      })
+    );
   }, []);
+
+  useEffect(() => {
+    console.log(onlineUsers);
+  }, [onlineUsers]);
+
+  const helper = () => {
+    arrivalMessage &&
+      currentChat?.members.includes(arrivalMessage.sender) &&
+      setMessages((prev) => [...prev, arrivalMessage]);
+  };
+
+  useEffect(() => helper(), [arrivalMessage, currentChat]);
+
+  useEffect(() => {
+    socket.emit("addUser", props.user._id);
+    socket.on("getUsers", (users) =>
+      setOnlineUsers(
+        props.user.friends.filter((f) => users.some((u) => u.userId === f))
+      )
+    );
+  }, [props.user]);
 
   useEffect(() => {
     const getMessages = async () => {
@@ -56,15 +88,15 @@ let App = (props) => {
 
     console.log(contentHtml);
 
-    // const receiverId = currentChat.members.find(
-    //   (member) => member !== user._id
-    // );
+    const receiverId = currentChat.members.find(
+      (member) => member !== props.user._id
+    );
 
-    // socket.current.emit("sendMessage", {
-    //   senderId: user._id,
-    //   receiverId,
-    //   text: newMessage,
-    // });
+    socket.emit("sendMessage", {
+      senderId: props.user._id,
+      receiverId,
+      text: msg.text,
+    });
 
     const config = {
       headers: {
@@ -124,28 +156,41 @@ let App = (props) => {
                 </div>
               </div>
               <SearchUser />
-              <h1 className="text-left text-white">Recent Chat</h1>
-              <ul type="none" className="p-0 m-0">
-                {conversations.length > 0 ? (
-                  conversations.map((c, indx) => (
-                    <li
-                      role="button"
-                      key={indx}
-                      onClick={() => setCurrentChat(c)}
-                    >
-                      <Conversation conversation={c} currentUser={props.user} />
-                    </li>
-                  ))
-                ) : (
-                  <div className="text-secondary">Start a new conversation</div>
-                )}
-              </ul>
-              <h1 className="mt-5 text-left text-white">Friends</h1>
-              <Friends
-                setConversations={setConversations}
-                friends={props.friends}
-                id={props.user._id}
-              />
+              <div className="conversation-wrapper">
+                <h1 className="conversation-h1 text-left text-white">
+                  Messages
+                </h1>
+                <ul type="none" className="p-0 m-0">
+                  {conversations.length > 0 ? (
+                    conversations.map((c, indx) => (
+                      <li
+                        role="button"
+                        key={indx}
+                        onClick={() => setCurrentChat(c)}
+                      >
+                        <Conversation
+                          conversation={c}
+                          currentUser={props.user}
+                        />
+                      </li>
+                    ))
+                  ) : (
+                    <div className="text-secondary">
+                      Start a new conversation
+                    </div>
+                  )}
+                </ul>
+              </div>
+              <div className="friends-wrapper mt-5">
+                <h1 className="friends-h1 text-left text-white">Friends</h1>
+                <Friends
+                  onlineUsers={onlineUsers}
+                  conversations={props.conversations}
+                  setCurrentChat={setCurrentChat}
+                  friends={props.friends}
+                  id={props.user._id}
+                />
+              </div>
             </div>
             <div className="col-8  ">
               {/* <div className="chat-msgs-window">

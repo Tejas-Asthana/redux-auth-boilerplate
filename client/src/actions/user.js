@@ -10,12 +10,14 @@ export const getFriends = () => (dispatch, getState) => {
 
   axios
     .get(
-      "/api/user/friends/" + getState().auth.user._id,
+      "http://localhost:5000/api/user/friends/" + getState().auth.user._id,
       generateTokenConfig(getState)
     )
     .then((res) => dispatch({ type: FRIENDS_LOADED, payload: res.data }))
     .catch((err) => {
-      // throw err;
+      if (err) {
+        throw err;
+      }
       dispatch(returnErrors(err.response.data, err.response.status));
       dispatch({ type: LOAD_FRIENDS_ERROR });
     });

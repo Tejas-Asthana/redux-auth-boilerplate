@@ -17,11 +17,7 @@ function Conversations({ conversation, currentUser }) {
     getUser();
   }, [currentUser, conversation]);
 
-  return (
-    <div className="conversation text-left">
-      <span className="conversationName text-white">{user?.username}</span>
-    </div>
-  );
+  return <div className="friend-list-item text-left">{user?.username}</div>;
 }
 
 export default Conversations;
