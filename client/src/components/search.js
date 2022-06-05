@@ -82,7 +82,7 @@ function Search(props) {
           className="searchbar"
           value={searchVal}
           onChange={(e) => setsearchVal(e.target.value)}
-          placeholder="Search your friends here"
+          placeholder="Search your friends by username"
         />
       </div>
       <div

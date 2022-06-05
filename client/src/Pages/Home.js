@@ -17,10 +17,12 @@ import { logout } from "../actions/auth";
 import "../App.css";
 import Send from "../imgs/send.svg";
 import Upload from "../imgs/upload.svg";
+import Uploaded from "../imgs/uploaded.svg";
 import Mention from "../imgs/mention.svg";
 import LinkSvg from "../imgs/link.svg";
 
 let App = (props) => {
+  const [currentFriend, setCurrentFriend] = useState(null);
   const [currentChat, setCurrentChat] = useState(null);
   const [messages, setMessages] = useState([]);
   const [contentHtml, setContentHtml] = useState("");
@@ -28,6 +30,7 @@ let App = (props) => {
   const [conversations, setConversations] = useState([]);
   const [arrivalMessage, setArrivalMessage] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
+  const [file, setFile] = useState(null);
   // const socket = useRef();
   const scrollRef = useRef();
 
@@ -36,6 +39,7 @@ let App = (props) => {
 
     socket.on("getMessage", (data) =>
       setArrivalMessage({
+        fileName: data.fileName,
         sender: data.senderId,
         text: data.text,
         createdAt: Date.now(),
@@ -49,26 +53,33 @@ let App = (props) => {
 
   const helper = () => {
     arrivalMessage &&
-      currentChat?.members.includes(arrivalMessage.sender) &&
+      currentChat.members?.includes(arrivalMessage.sender) &&
       setMessages((prev) => [...prev, arrivalMessage]);
   };
 
   useEffect(() => helper(), [arrivalMessage, currentChat]);
 
   useEffect(() => {
-    socket.emit("addUser", props.user._id);
-    socket.on("getUsers", (users) =>
-      setOnlineUsers(
-        props.user.friends.filter((f) => users.some((u) => u.userId === f))
-      )
-    );
+    try {
+      socket.emit("addUser", props.user._id);
+      socket.on(
+        "getUsers",
+        (users) =>
+          setOnlineUsers(
+            props.user.friends.filter((f) => users.some((u) => u.userId === f))
+          )
+        // setOnlineUsers(users)
+      );
+    } catch (err) {
+      console.log(err);
+    }
   }, [props.user]);
 
   useEffect(() => {
     const getMessages = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:5000/api/messages/" + currentChat?._id
+          "http://localhost:5000/api/messages/" + currentChat._id
         );
         setMessages(res.data);
       } catch (err) {
@@ -80,23 +91,26 @@ let App = (props) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const msg = {
-      sender: props.user._id,
-      text: contentHtml,
-      conversationId: currentChat._id,
-    };
 
-    console.log(contentHtml);
+    // console.log(contentHtml);
 
-    const receiverId = currentChat.members.find(
+    const receiverId = currentChat?.members.find(
       (member) => member !== props.user._id
     );
 
     socket.emit("sendMessage", {
       senderId: props.user._id,
       receiverId,
-      text: msg.text,
+      text: contentHtml,
+      fileName: file?.name,
     });
+
+    const msg = {
+      sender: props.user._id,
+      text: contentHtml,
+      conversationId: currentChat?._id,
+      fileName: file?.name,
+    };
 
     const config = {
       headers: {
@@ -110,19 +124,32 @@ let App = (props) => {
         "http://localhost:5000/api/messages/",
         config
       );
-      console.log(config);
       setMessages([...messages, res.data]);
       console.log(messages);
       setNewMessage(EditorState.createEmpty());
     } catch (err) {
       console.log(err);
     }
+
+    if (file) {
+      const data = new FormData();
+      const fileName = file?.name;
+      data.append("name", fileName);
+      data.append("file", file);
+
+      try {
+        const res = await axios.post("http://localhost:5000/api/upload/", data);
+        setFile(null);
+      } catch (err) {
+        if (err) throw err;
+      }
+    }
   };
 
   useEffect(() => {
     props.getFriends();
     props.getConversations();
-  }, []);
+  }, [currentChat]);
 
   useEffect(() => {
     const html = convertToHTML(newMessage.getCurrentContent());
@@ -133,6 +160,22 @@ let App = (props) => {
     () => scrollRef.current?.scrollIntoView({ behavior: "smooth" }),
     [messages]
   );
+
+  const helperCreateChat = async (c) => {
+    if (!c) {
+      const config = {
+        data: {
+          senderId: props.auth?.user?._id,
+          receiverId: currentFriend?._id,
+        },
+      };
+      const res = await axios.post(
+        "http://localhost:5000/api/conversations",
+        config
+      );
+      setCurrentChat(res.data);
+    } else setCurrentChat(c);
+  };
 
   return props.isAuthenticated ? (
     <>
@@ -157,19 +200,24 @@ let App = (props) => {
               </div>
               <SearchUser />
               <div className="conversation-wrapper">
-                <h1 className="conversation-h1 text-left text-white">
-                  Messages
-                </h1>
+                <h1 className="conversation-h1 text-white">Messages</h1>
                 <ul type="none" className="p-0 m-0">
                   {conversations.length > 0 ? (
                     conversations.map((c, indx) => (
                       <li
                         role="button"
                         key={indx}
-                        onClick={() => setCurrentChat(c)}
+                        onClick={() => helperCreateChat(c)}
+                        className={
+                          currentFriend?._id === c.members[0] ||
+                          currentFriend?._id === c.members[1]
+                            ? "chat-selected"
+                            : ""
+                        }
                       >
                         <Conversation
                           conversation={c}
+                          setCurrentFriend={setCurrentFriend}
                           currentUser={props.user}
                         />
                       </li>
@@ -182,11 +230,12 @@ let App = (props) => {
                 </ul>
               </div>
               <div className="friends-wrapper mt-5">
-                <h1 className="friends-h1 text-left text-white">Friends</h1>
+                <h1 className="friends-h1 text-white">Friends</h1>
                 <Friends
+                  setCurrentFriend={setCurrentFriend}
                   onlineUsers={onlineUsers}
                   conversations={props.conversations}
-                  setCurrentChat={setCurrentChat}
+                  setCurrentChat={helperCreateChat}
                   friends={props.friends}
                   id={props.user._id}
                 />
@@ -196,68 +245,117 @@ let App = (props) => {
               {/* <div className="chat-msgs-window">
                 <div className="p-0 m-0"> */}
               <div className="d-flex chat-wrapper flex-column">
-                {currentChat ? (
+                {currentFriend || currentChat ? (
                   <>
-                    <div className="p-2 show-messages">
-                      {messages.map((m) => (
-                        <div ref={scrollRef}>
-                          <Message
-                            message={m}
-                            own={m.sender === props.user._id}
-                          />
-                        </div>
-                      ))}
-                    </div>
-                    <div
-                      className="chat-input"
-                      onClick={() =>
-                        document.querySelector(".editor-input").focus()
-                      }
-                    >
-                      <EditorBox
-                        newMessage={newMessage}
-                        setNewMessage={setNewMessage}
-                      />
-                      <div className="row m-0 bg-white ">
+                    <h1 className="text-white">
+                      {currentFriend &&
+                      onlineUsers.find((user) => user === currentFriend._id) ? (
                         <div>
-                          <input
-                            type="file"
-                            id="actual-upload-btn"
-                            className="bg-white"
-                            hidden
-                          />
+                          <span className="dot mb-1 online" />
+                          {currentFriend?.username} &nbsp;
+                          <span className="text-secondary h6">
+                            <i>( online )</i>
+                          </span>
+                        </div>
+                      ) : (
+                        <div>
+                          <span className="dot mb-1 offline" />
+                          {currentFriend?.username} &nbsp;
+                          <span className="text-secondary h6">
+                            <i> ( offline )</i>
+                          </span>
+                        </div>
+                      )}
+                    </h1>
+                    <div className="p-2 show-messages">
+                      {currentChat && currentFriend ? (
+                        messages.map((m) => (
+                          <div ref={scrollRef}>
+                            <Message
+                              message={m}
+                              own={m.sender === props.user._id}
+                            />
+                          </div>
+                        ))
+                      ) : (
+                        <div
+                          style={{ maxWidth: "400px", margin: "auto" }}
+                          className="text-secondary text-center h4"
+                        >
+                          Send {currentFriend?.username} a message
+                        </div>
+                      )}
+                    </div>
+                    {currentFriend ? (
+                      <div
+                        className="chat-input"
+                        onClick={() =>
+                          document.querySelector(".editor-input").focus()
+                        }
+                      >
+                        <EditorBox
+                          friends={props.friends}
+                          newMessage={newMessage}
+                          setNewMessage={setNewMessage}
+                        />
+                        <div className="row m-0 bg-white ">
+                          <div>
+                            <input
+                              type="file"
+                              id="actual-upload-btn"
+                              className="bg-white"
+                              name="file"
+                              onChange={(e) => setFile(e.target.files[0])}
+                              hidden
+                            />
 
-                          <label id="actual-upload-btn" for="actual-upload-btn">
-                            <img src={Upload} />
-                          </label>
-                        </div>
-                        <div className="pl-2">
-                          <img
-                            style={{ width: "30px", marginTop: "4px" }}
-                            src={Mention}
-                            role="button"
-                          />
-                        </div>
-                        <div className="pl-2">
-                          <img
-                            style={{ width: "17px", marginTop: "10px" }}
-                            src={LinkSvg}
-                            role="button"
-                          />
-                        </div>
-                        <div className="ml-auto pr-1">
-                          <button
-                            className="chatSubmitButton"
-                            onClick={handleSubmit}
-                          >
-                            <img style={{ width: "30px" }} src={Send} />
-                          </button>
+                            <label
+                              id="actual-upload-btn"
+                              for="actual-upload-btn"
+                            >
+                              {file ? (
+                                <img src={Uploaded} />
+                              ) : (
+                                <img src={Upload} />
+                              )}
+                            </label>
+                          </div>
+                          <div className="pl-2">
+                            <img
+                              style={{ width: "30px", marginTop: "4px" }}
+                              src={Mention}
+                              role="button"
+                            />
+                          </div>
+                          <div className="pl-2">
+                            <img
+                              style={{ width: "17px", marginTop: "10px" }}
+                              src={LinkSvg}
+                              role="button"
+                            />
+                          </div>
+                          <div className="ml-auto pr-1">
+                            <button
+                              className="chatSubmitButton"
+                              onClick={handleSubmit}
+                            >
+                              <img style={{ width: "30px" }} src={Send} />
+                            </button>
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    ) : (
+                      <div></div>
+                    )}
                   </>
                 ) : (
-                  <span className="text-secondary h1">No message to show</span>
+                  <div
+                    style={{ maxWidth: "400px", margin: "auto" }}
+                    className="text-secondary text-center h4"
+                  >
+                    Select from Messages or start a new conversation by clicking
+                    on a friend
+                  </div>
                 )}
               </div>
             </div>

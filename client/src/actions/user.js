@@ -10,7 +10,7 @@ export const getFriends = () => (dispatch, getState) => {
 
   axios
     .get(
-      "http://localhost:5000/api/user/friends/" + getState().auth.user._id,
+      "http://localhost:5000/api/user/friends/" + getState().auth?.user?._id,
       generateTokenConfig(getState)
     )
     .then((res) => dispatch({ type: FRIENDS_LOADED, payload: res.data }))

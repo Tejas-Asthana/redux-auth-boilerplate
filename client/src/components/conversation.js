@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-function Conversations({ conversation, currentUser }) {
+function Conversations({ conversation, setCurrentFriend, currentUser }) {
   const [user, setUser] = useState(null);
   useEffect(() => {
     const friendId = conversation.members.find((m) => m !== currentUser._id);
@@ -17,7 +17,14 @@ function Conversations({ conversation, currentUser }) {
     getUser();
   }, [currentUser, conversation]);
 
-  return <div className="friend-list-item text-left">{user?.username}</div>;
+  return (
+    <div
+      onClick={() => setCurrentFriend(user)}
+      className={"friend-list-item text-left "}
+    >
+      {user?.username}
+    </div>
+  );
 }
 
 export default Conversations;

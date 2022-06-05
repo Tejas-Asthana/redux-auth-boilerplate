@@ -33,11 +33,13 @@
   padding: 20px 10px;
   background: rgba(184, 184, 184, 0.199);
   border-radius: 10px;
+  max-height: 400px;
+  overflow-y: scroll;
 }
 
 .conversation-h1,
 .friends-h1 {
-  padding-bottom: 10px;
+  padding: 0 50px 10px;
   border-bottom: 1px solid #fff;
 }
 
@@ -63,6 +65,12 @@
   background-color: rgba(153, 153, 153, 0.199);
 }
 
+.chat-selected {
+  background: rgba(0, 0, 0, 0.247);
+  padding: 5px 10px;
+  border-radius: 20px;
+}
+
 .chat-window {
   border-left: 1px solid #ddd;
   padding: 0 5px;
@@ -80,20 +88,6 @@
   width: 100%;
   max-width: 100%;
 }
-
-/* .chat-input-wrapper {
-  z-index: 2;
-  position: absolute;
-  bottom: 0;
-  margin: 10px 0;
-  min-height: 150px;
-  max-height: 200px;
-  border: 1px solid rgb(92, 92, 92);
-  padding: 5px;
-  border-radius: 10px;
-  width: 100%;
-  max-width: 100%;
-} */
 
 .msg-slf {
   background: rgb(197, 197, 197);
@@ -132,6 +126,18 @@
   align-items: flex-start;
 }
 
+.document-message {
+  background: rgba(255, 255, 254, 0.082);
+  border: 1px solid #000;
+  border-radius: 10px;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+.document-icon {
+  width: 60px;
+}
+
 .messageText {
   padding: 10px 15px;
   border-radius: 20px;
@@ -168,7 +174,9 @@
 
 .show-messages {
   overflow-y: scroll;
+  height: 70%;
   min-height: 70%;
+  max-height: 70%;
   border: 2px solid rgba(255, 255, 255, 0.466);
   border-radius: 20px;
   padding: 30px;
@@ -188,6 +196,7 @@
 }
 
 .editor-input {
+  z-index: 99;
   padding: 0 15px;
   height: 100%;
   min-height: 90px;
@@ -207,6 +216,7 @@
 .chatSubmitButton {
   width: 70px;
   height: 40px;
+  outline: none;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -223,5 +233,7 @@
   cursor: pointer;
   margin-top: 0px;
   color: #fff;
+  outline: none;
+  border: none;
 }
 /*  */

@@ -80,7 +80,7 @@ export const registerUser =
       .catch((err) => {
         // console.log(body);
         dispatch(
-          returnErrors(err.response.data, err.response.status, REGISTER_FAIL)
+          returnErrors(err.response?.data, err.response?.status, REGISTER_FAIL)
         );
         dispatch({ type: REGISTER_FAIL });
       });

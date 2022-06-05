@@ -22,4 +22,11 @@ function auth(req, res, next) {
   }
 }
 
-module.exports = auth;
+const correctFileName = (req, res, next) => {
+  let path = req.body.name.replaceAll("'", "_");
+  path = path.body.name.replaceAll(" ", "_");
+  req.body.name = path;
+  next();
+};
+
+module.exports = { auth, correctFileName };
