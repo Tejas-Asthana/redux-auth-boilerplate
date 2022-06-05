@@ -1,9 +1,5 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Editor } from "react-draft-wysiwyg";
-import Bold from "../imgs/bold.svg";
-import Italic from "../imgs/italics.svg";
-import Underline from "../imgs/underline.svg";
-import Strikethrough from "../imgs/strikethrough.svg";
 
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 

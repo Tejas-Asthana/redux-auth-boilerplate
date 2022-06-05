@@ -19,10 +19,13 @@ function Search(props) {
   };
 
   const handleSearch = () => {
+    setLoading(true);
     axios
       .get("/api/user/searchUsers/" + searchVal, config)
       .then((res) => {
         setSearchRes(res.data);
+        setsearchVal("");
+        setLoading(false);
       })
       .catch((err) => {
         throw err;
@@ -36,6 +39,7 @@ function Search(props) {
       .then((res) => {
         setLoading(false);
         setAdded(true);
+        setSearchRes([]);
         props.getFriends();
       })
       .catch((err) => {
@@ -43,8 +47,9 @@ function Search(props) {
         setLoadingFailed(true);
         throw err;
       });
-    setSearchRes([]);
   };
+
+  // const added = () => {};
 
   const SearchFriendResults = () => {
     return searchRes.map((friend, indx) => {
@@ -61,7 +66,7 @@ function Search(props) {
               <div>Loading...</div>
             ) : loadingFailed ? (
               <div>Failed...</div>
-            ) : added ? (
+            ) : props.friends.find((f) => friend._id === f._id) ? (
               <div>Added</div>
             ) : (
               <div>

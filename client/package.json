@@ -1,5 +1,5 @@
 {
-  "name": "react-authorization",
+  "name": "Messenger",
   "version": "0.1.0",
   "private": true,
   "proxy": "http://localhost:5000",

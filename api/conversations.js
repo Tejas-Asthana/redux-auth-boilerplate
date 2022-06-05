@@ -42,7 +42,7 @@ router.get("/find/:firstUserId/:secondUserId", async (req, res) => {
       members: { $all: [req.params.firstUserId, req.params.secondUserId] },
     });
     console.log(conversation);
-    if (conversation === null) {
+    if (conversation === null || conversation.data === {}) {
       const newConversation = new Conversation({
         members: [req.params.firstUserId, req.params.secondUserId],
       });
@@ -53,8 +53,7 @@ router.get("/find/:firstUserId/:secondUserId", async (req, res) => {
       } catch (err) {
         res.status(500).json({ err });
       }
-    }
-    res.status(200).json(conversation);
+    } else res.status(200).json(conversation);
   } catch (err) {
     res.status(500).json(err);
   }

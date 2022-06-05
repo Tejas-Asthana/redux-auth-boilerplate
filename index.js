@@ -6,6 +6,7 @@ const config = require("config");
 const express = require("express");
 const cors = require("cors");
 const fs = require("fs");
+const urlMetadata = require("url-metadata");
 
 const app = express();
 app.use(cors());
@@ -72,6 +73,21 @@ app.get("/api/files/:fileName", (req, res) => {
     console.log(data);
     res.status(200).send(data);
   });
+});
+
+app.get("/api/metaData/:url", async (req, res) => {
+  urlMetadata(req.params.url).then(
+    function (metadata) {
+      // success handler
+      console.log(metadata);
+      res.status(200).json(metadata);
+    },
+    function (error) {
+      // failure handler
+      console.log(error);
+      res.status(500).json({ error });
+    }
+  );
 });
 
 app.use("/api/auth", auth);

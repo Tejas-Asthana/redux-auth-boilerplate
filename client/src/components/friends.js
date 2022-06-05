@@ -3,7 +3,7 @@ import axios from "axios";
 
 function Friends({
   onlineUsers,
-  setCurrentChat,
+  helperCreateChat,
   friends,
   id,
   setCurrentFriend,
@@ -20,7 +20,7 @@ function Friends({
         `http://localhost:5000/api/conversations/find/${friend._id}/${id}`
       );
       // console.log(res.data);
-      setCurrentChat(res.data);
+      helperCreateChat(res.data);
       setCurrentFriend(friend);
     } catch (err) {
       console.log(err);

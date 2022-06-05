@@ -53,7 +53,7 @@ let App = (props) => {
 
   const helper = () => {
     arrivalMessage &&
-      currentChat.members?.includes(arrivalMessage.sender) &&
+      currentChat?.members?.includes(arrivalMessage.sender) &&
       setMessages((prev) => [...prev, arrivalMessage]);
   };
 
@@ -75,19 +75,21 @@ let App = (props) => {
     }
   }, [props.user]);
 
+  const getMessages = async () => {
+    try {
+      const res = await axios.get(
+        "http://localhost:5000/api/messages/" + currentChat._id
+      );
+      setMessages(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  // getMessages();
+
   useEffect(() => {
-    const getMessages = async () => {
-      try {
-        const res = await axios.get(
-          "http://localhost:5000/api/messages/" + currentChat._id
-        );
-        setMessages(res.data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
     getMessages();
-  }, [currentChat]);
+  }, [currentFriend, conversations, currentChat]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -148,8 +150,11 @@ let App = (props) => {
 
   useEffect(() => {
     props.getFriends();
-    props.getConversations();
   }, [currentChat]);
+
+  useEffect(() => {
+    props.getConversations();
+  }, [currentFriend]);
 
   useEffect(() => {
     const html = convertToHTML(newMessage.getCurrentContent());
@@ -162,18 +167,23 @@ let App = (props) => {
   );
 
   const helperCreateChat = async (c) => {
-    if (!c) {
-      const config = {
-        data: {
-          senderId: props.auth?.user?._id,
-          receiverId: currentFriend?._id,
-        },
-      };
-      const res = await axios.post(
-        "http://localhost:5000/api/conversations",
-        config
-      );
-      setCurrentChat(res.data);
+    console.log(c);
+    if (!c._id) {
+      try {
+        const config = {
+          data: {
+            senderId: props.auth?.user?._id,
+            receiverId: currentFriend?._id,
+          },
+        };
+        const res = await axios.post(
+          "http://localhost:5000/api/conversations",
+          config
+        );
+        setCurrentChat(res.data);
+      } catch (err) {
+        throw err;
+      }
     } else setCurrentChat(c);
   };
 
@@ -198,7 +208,7 @@ let App = (props) => {
                   </button>
                 </div>
               </div>
-              <SearchUser />
+              <SearchUser friends={props.friends} />
               <div className="conversation-wrapper">
                 <h1 className="conversation-h1 text-white">Messages</h1>
                 <ul type="none" className="p-0 m-0">
@@ -235,7 +245,7 @@ let App = (props) => {
                   setCurrentFriend={setCurrentFriend}
                   onlineUsers={onlineUsers}
                   conversations={props.conversations}
-                  setCurrentChat={helperCreateChat}
+                  helperCreateChat={helperCreateChat}
                   friends={props.friends}
                   id={props.user._id}
                 />
@@ -320,20 +330,20 @@ let App = (props) => {
                               )}
                             </label>
                           </div>
-                          <div className="pl-2">
+                          {/* <div className="pl-2">
                             <img
                               style={{ width: "30px", marginTop: "4px" }}
                               src={Mention}
                               role="button"
                             />
-                          </div>
-                          <div className="pl-2">
+                          </div> */}
+                          {/* <div className="pl-2">
                             <img
                               style={{ width: "17px", marginTop: "10px" }}
                               src={LinkSvg}
                               role="button"
                             />
-                          </div>
+                          </div> */}
                           <div className="ml-auto pr-1">
                             <button
                               className="chatSubmitButton"
