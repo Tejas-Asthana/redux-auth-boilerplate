@@ -9,7 +9,11 @@ const fs = require("fs");
 const urlMetadata = require("url-metadata");
 
 const app = express();
-app.use(cors());
+app.use(
+  cors({
+    origin: "https://messenger-beryl.vercel.app",
+  })
+);
 const http = require("http").createServer(app);
 const io = require("socket.io")(http);
 
