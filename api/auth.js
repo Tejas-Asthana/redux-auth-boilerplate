@@ -6,16 +6,17 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
 router.post("/login", async (req, res) => {
-  if (!req.body.data.email || !req.body.data.password) {
+  console.log(req.body);
+  if (!req.body.email || !req.body.password) {
     return response.status(400).json({ msg: "Enter all fields" });
   }
 
   try {
-    const user = await User.findOne({ email: req.body.data.email });
+    const user = await User.findOne({ email: req.body.email });
     !user && res.status(404).json("user not found");
 
     const validPassword = await bcrypt.compare(
-      req.body.data.password,
+      req.body.password,
       user.password
     );
     !validPassword && res.status(400).json("wrong password");
@@ -27,15 +28,14 @@ router.post("/login", async (req, res) => {
       (err, token) => {
         if (err) throw err;
         const { password, ...other } = user._doc;
-        res.status(200).json({
+        return res.status(200).json({
           token,
           user: other,
         });
       }
     );
   } catch (err) {
-    throw err;
-    // res.status(500).json(err);
+    res.status(500).json(err);
   }
 });
 
@@ -44,24 +44,20 @@ router.post("/login", async (req, res) => {
 // registers a user and generates a token
 
 router.post("/register", async (req, res) => {
-  console.log(req.body);
-  if (
-    !req.body.data.username ||
-    !req.body.data.email ||
-    !req.body.data.password
-  ) {
+  console.log;
+  if (!req.body.username || !req.body.email || !req.body.password) {
     return res.status(400).json({ msg: "Enter all fields" });
   }
 
   try {
     //generate new password
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(req.body.data.password, salt);
+    const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
     //create new user
     const newUser = new User({
-      username: req.body.data.username,
-      email: req.body.data.email,
+      username: req.body.username,
+      email: req.body.email,
       password: hashedPassword,
     });
 
