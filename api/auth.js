@@ -44,10 +44,13 @@ router.post("/login", async (req, res) => {
 // registers a user and generates a token
 
 router.post("/register", async (req, res) => {
-  console.log;
+  console.log(req.body);
   if (!req.body.username || !req.body.email || !req.body.password) {
     return res.status(400).json({ msg: "Enter all fields" });
   }
+
+  const user = await User.findOne({ email: req.body.email });
+  user && res.status(404).json("user already registered");
 
   try {
     //generate new password
